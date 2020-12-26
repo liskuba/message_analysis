@@ -7,7 +7,7 @@ if __name__ == '__main__':
     # Create your csv files
     # a list to all directories created by facebook
     # sometimes it is only one directory, sometimes more - make sure to put it in a list
-    # fe. list_of_paths_to_directories = ['facebook-kubalis186-1', 'facebook-kubalis186-2']
+    # e.g. list_of_paths_to_directories = ['facebook-kubalis186-1', 'facebook-kubalis186-2']
 
     list_of_paths_to_directories = None
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
             f.write(key + '\n')
 
     create_csv(
-        "Imię Naziwsko",  # fe. "Kuba Lis"
+        "Imię Naziwsko",  # e.g. "Kuba Lis"
         list_of_paths_to_directories,
         'data/outputfile_1.csv',
         True
