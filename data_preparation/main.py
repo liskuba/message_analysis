@@ -19,14 +19,14 @@ if __name__ == '__main__':
     create_csv(
         "Imię Naziwsko",  # fe. "Kuba Lis"
         list_of_paths_to_directories,
-        'outputfile_1.csv',
+        'data/outputfile_1.csv',
         True
     )
 
     create_csv_2(
         "Imię Naziwsko",
         list_of_paths_to_directories,
-        'outputfile_2.csv',
+        'data/outputfile_2.csv',
         True
     )
 
