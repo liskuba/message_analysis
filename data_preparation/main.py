@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
     # Create your csv files
     # a list to all directories created by facebook
-    # sometimes it is only one directory, sometimes more - make you put it in a list
+    # sometimes it is only one directory, sometimes more - make sure to put it in a list
     # fe. list_of_paths_to_directories = ['facebook-kubalis186-1', 'facebook-kubalis186-2']
 
     list_of_paths_to_directories = None
