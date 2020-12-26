@@ -4,7 +4,7 @@ import emoji
 
 def count_in_one_file(person, path_to_json, timestamps=None, lengths=None, emojis=None):
     """person means our name and surname on Facebook,
-    fe. person == 'Jan Nowak' """
+    e.g. person == 'Jan Nowak' """
     if lengths is None:
         lengths = []
     if timestamps is None:
