@@ -3,7 +3,7 @@ import json
 
 def count_in_one_file_2(person, path_to_json, timestamps=None, reactions=None):
     """person means our name and surname on Facebook,
-    fe. person == 'Jan Nowak' """
+    e.g. person == 'Jan Nowak' """
     if timestamps is None:
         timestamps = []
     if reactions is None:
