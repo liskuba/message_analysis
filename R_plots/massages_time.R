@@ -13,9 +13,16 @@ messages <- rbind(messages, read_csv(paste(path,"/Kuba_Lis_1.csv",sep = '')))
 summary(messages)
 
 messages %>%
-  filter(length <=150)%>%
   ggplot()+
-  geom_histogram(aes(x = length),bins = 30)+
-  xlab("message length") + 
-  ylab("number of messages")
+  geom_bar(aes(x = floored_hour),stat = "count")+
+  xlab("message hour") + 
+  ylab("number of messages") -> plot
 
+plot
+
+plot + facet_wrap(~day_of_the_week)
+
+
+messages %>%
+  ggplot()+
+  geom_point(aes(x = length, y = floored_hour))
