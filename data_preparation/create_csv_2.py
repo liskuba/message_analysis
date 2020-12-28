@@ -1,10 +1,10 @@
 import pandas as pd
 import time
 from count_in_all_files_2 import count_in_all_files_2
-from dateutil import tz
+# from dateutil import tz
 
 
-def create_csv_2(person, list_of_paths_to_directories, output_file_path, print_paths=False):
+def create_reactions_csv(person, list_of_paths_to_directories, output_file_path, print_paths=False):
     start = time.time()
     timestamps, reactions = count_in_all_files_2(
         person, list_of_paths_to_directories, print_paths

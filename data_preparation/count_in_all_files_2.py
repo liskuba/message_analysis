@@ -10,7 +10,7 @@ def count_in_all_files_2(person, list_of_paths_to_directories, print_paths=False
     reactions = []
     i = 0
     for directory in list_of_paths_to_directories:
-        for path, subdirs, files in os.walk(directory + 'messages/'):
+        for path, subdirs, files in os.walk(directory + 'messages' + os.path.sep):
             for name in files:
                 if fnmatch(name, pattern):
                     if print_paths:

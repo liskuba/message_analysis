@@ -1,14 +1,17 @@
-from create_csv import create_csv
-from create_csv_2 import create_csv_2
+from create_csv import create_messages_csv
+from create_csv_2 import create_reactions_csv
+from create_notifications_csv import create_notifications_csv
 import emoji
+import os
 
-if __name__ == '__main__':
 
+def main():
     # Create your csv files
     # a list to all directories created by facebook
     # sometimes it is only one directory, sometimes more - make sure to put it in a list
     # e.g. list_of_paths_to_directories = ['path/facebook-kubalis186-1/', 'path/facebook-kubalis186-2/']
-
+    name = 'Jan'
+    surname = 'Kowalski'
     list_of_paths_to_directories = None
 
     # a file with all emojis - maybe it can be used in R
@@ -16,20 +19,23 @@ if __name__ == '__main__':
         for key in emoji.UNICODE_EMOJI.keys():
             f.write(key + '\n')
 
-    create_csv(
-        "Imię Naziwsko",  # e.g. "Kuba Lis"
+    create_messages_csv(
+        name + ' ' + surname,
         list_of_paths_to_directories,
-        'data/outputfile_1.csv',
+        os.path.join('data', 'messages_' + name + '_' + surname + '.csv'),
         True
     )
 
-    create_csv_2(
-        "Imię Naziwsko",
+    create_reactions_csv(
+        name + ' ' + surname,
         list_of_paths_to_directories,
-        'data/outputfile_2.csv',
+        os.path.join('data', 'reactions_' + name + '_' + surname + '.csv'),
         True
     )
 
+    create_notifications_csv(list_of_paths_to_directories,
+                             os.path.join('data', 'notifications_' + name + '_' + surname + '.csv'))
 
 
-
+if __name__ == '__main__':
+    main()
