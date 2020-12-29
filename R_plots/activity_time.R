@@ -7,8 +7,17 @@ library(dplyr)
 path <- "../data_preparation/data"
 
 messages <- read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = ''))
-messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')))
+#messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')))
 #messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Koziel.csv",sep = '')))
+
+notifications <- read_csv(paste(path,'/notifications_Bartek_Sawicki.csv',sep = ''))
+
+notifications %>%
+  ggplot()+
+  geom_bar(aes(x = floored_hour),stat = "count")+
+  xlab("notification hour") + 
+  ylab("number of notifications")
+
 
 summary(messages)
 
