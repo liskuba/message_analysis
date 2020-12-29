@@ -6,9 +6,9 @@ library(dplyr)
 # sciezka do katalogu z csv przygotowanymi w pythonie
 path <- "../data_preparation/data"
 
-messages <- read_csv(paste(path,"/Bartek_Sawicki_1.csv",sep = ''))
-messages <- rbind(messages, read_csv(paste(path,"/Kuba_Lis_1.csv",sep = '')))
-#messages <- rbind(messages, read_csv(paste(path,"/Kuba_Koziel_1.csv",sep = '')))
+messages <- read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = ''))
+messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')))
+#messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Koziel.csv",sep = '')))
 
 summary(messages)
 
