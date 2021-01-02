@@ -30,6 +30,8 @@ def count_notifications(list_of_paths_to_directories):
     unread = []
     for directory in list_of_paths_to_directories:
         json_dir = os.path.join(directory, path)
+        if not os.path.exists(json_dir):
+            continue
         with open(json_dir, 'r') as f:
             data = json.load(f)
             for notification in data['notifications']:

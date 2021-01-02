@@ -1,6 +1,6 @@
-from create_csv import create_messages_csv
-from create_csv_2 import create_reactions_csv
-from create_notifications_csv import create_notifications_csv
+from data_preparation.create_messages_csv import create_messages_csv
+from data_preparation.create_reactions_csv import create_reactions_csv
+from data_preparation.create_notifications_csv import create_notifications_csv
 import emoji
 import os
 
@@ -10,12 +10,13 @@ def main():
     # a list to all directories created by facebook
     # sometimes it is only one directory, sometimes more - make sure to put it in a list
     # e.g. list_of_paths_to_directories = ['path/facebook-kubalis186-1/', 'path/facebook-kubalis186-2/']
-    name = 'Jan'
-    surname = 'Kowalski'
-    list_of_paths_to_directories = None
+    name = 'Kuba'
+    surname = 'Lis'
+    list_of_paths_to_directories = ['/Users/jakublis/Desktop/Fb_DATA/facebook-kubalis186-2/',
+                                    '/Users/jakublis/Desktop/Fb_DATA/facebook-kubalis186-3/']
 
     # a file with all emojis - maybe it can be used in R
-    with open('all_emoji.txt', 'w') as f:
+    with open('data/all_emoji.txt', 'w') as f:
         for key in emoji.UNICODE_EMOJI.keys():
             f.write(key + '\n')
 
