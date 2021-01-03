@@ -1,3 +1,3 @@
-# messege_analysis
+# message_analysis
 
 Projekcik :)
