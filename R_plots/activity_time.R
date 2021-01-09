@@ -6,11 +6,14 @@ library(dplyr)
 # sciezka do katalogu z csv przygotowanymi w pythonie
 path <- "../data_preparation/data"
 
-messages <- read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = ''))
-#messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')))
-#messages <- rbind(messages, read_csv(paste(path,"/messages_Kuba_Koziel.csv",sep = '')))
+messages <- cbind(read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = '')),person = "Bartek")
+messages <- rbind(messages, cbind(read_csv(paste(path,"/Kuba_Lis_1.csv",sep = '')),person = "Kuba L"))
+# messages <- rbind(messages, cbind(read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')),person = "Kuba L"))
+# messages <- rbind(messages, cbind(read_csv(paste(path,"/messages_Kuba_Koziel.csv",sep = '')), person = "Kuba K"))
 
-notifications <- read_csv(paste(path,'/notifications_Bartek_Sawicki.csv',sep = ''))
+notifications <- cbind(read_csv(paste(path,"/notifications_Bartek_Sawicki.csv",sep = '')),person = "Bartek")
+# notifications <- rbind(notifications, cbind(read_csv(paste(path,"/notifications_Kuba_Lis.csv",sep = '')),person = "Kuba L"))
+# notifications <- rbind(notifications, cbind(read_csv(paste(path,"/notifications_Kuba_Koziel.csv",sep = '')), person = "Kuba K"))
 
 notifications %>%
   ggplot()+
@@ -30,6 +33,10 @@ messages %>%
 plot
 
 plot + facet_wrap(~day_of_the_week)
+
+plot + facet_wrap(~person)
+
+plot + facet_grid(rows = vars(day_of_the_week), cols = vars(person))
 
 
 messages %>%
