@@ -61,7 +61,7 @@ def count_in_one_file(person, path_to_json, timestamps=None, lengths=None, emoji
     with open(path_to_json, 'r') as j:
         data = json.load(j)
         for message in data['messages']:
-            if message['sender_name'] != person:
+            if message['sender_name'].encode('iso-8859-1').decode('utf-8') != person:
                 continue
             if 'content' in message:
                 timestamps.append(message['timestamp_ms'])
