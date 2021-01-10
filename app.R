@@ -1,5 +1,17 @@
 library(shiny)
 library(shinythemes)
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(patchwork)
+library(ggthemes)
+library(tidyverse)
+library(rvest)
+# devtools::install_github("clauswilke/ggtext")
+library(ggtext)
+library(emo)
+source("R_plots/prepare_data.R")
 
 
 ui <- fluidPage(
@@ -49,7 +61,8 @@ ui <- fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("tab1", "Hello"),
-        tabPanel("tab2", "World"),
+        tabPanel("The Most Used Emojis", br(),
+                 plotOutput("emojiPlot")),
         tabPanel("tab3", br(),
                  selectInput(inputId = "dayOfWeek",
                              label = "Day of the week",
@@ -62,7 +75,14 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  
+  output$emojiPlot <- renderPlot({
+    if (length(input$persons) == 0){
+      return(NULL)
+    }
+    plot_emoji(input$dateRange[1], input$dateRange[2],
+               input$persons)
+    
+  })
 }
 
 shinyApp(ui, server)
