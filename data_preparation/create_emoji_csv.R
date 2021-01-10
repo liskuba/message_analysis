@@ -18,7 +18,7 @@ link_to_img <- function(x, size = 25) {
   paste0("<img src='", x, "' width='", size, "'/>")
 }
 
-path <- "../data_preparation/data"
+path <- "data"
 
 messages <- read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')) %>%
   filter(!is.na(emojis))
