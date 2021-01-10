@@ -10,6 +10,7 @@ library(tidyverse)
 library(rvest)
 # devtools::install_github("clauswilke/ggtext")
 library(ggtext)
+# devtools::install_github("hadley/emo")
 library(emo)
 source("R_plots/prepare_data.R")
 
