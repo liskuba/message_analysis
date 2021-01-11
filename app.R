@@ -12,7 +12,6 @@ library(rvest)
 library(ggtext)
 # devtools::install_github("hadley/emo")
 library(emo)
-source("R_plots/prepare_data.R")
 
 
 library(dygraphs)
@@ -23,6 +22,8 @@ library(dplyr)
 library(gridExtra)
 
 source("R_plots/data_messages_over_years.R")
+source("R_plots/prepare_data.R")
+
 
 
 
@@ -85,7 +86,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                     tabPanel("The Most Used Emojis", br(),
                              plotOutput("emojiPlot")),
                     tabPanel(
-                      "tab3",
+                      "Activity time",
                       br(),
                       selectInput(
                         inputId = "dayOfWeek",
@@ -98,9 +99,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                           "Friday",
                           "Saturday",
                           "Sunday",
-                          "all???"
+                          "all"
                         )
-                      )
+                      ),
+                      br(),
+                      plotOutput("activityPlot"),
                     )
                   ))
                 ))
@@ -114,6 +117,15 @@ server <- function(input, output, session) {
                input$persons)
     
   })
+  
+  ### Tab 3 
+  output$activityPlot <- renderPlot({
+    if (length(input$persons) == 0) {
+      return(NULL)
+    }
+    plot_activity_time(input$dateRange[1], input$dateRange[2],
+               input$persons, input$dayOfWeek)
+  })  
   
   
   ############ Tab 1 functionality
