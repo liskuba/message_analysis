@@ -15,24 +15,37 @@ library(emo)
 source("R_plots/prepare_data.R")
 
 
-ui <- fluidPage(
-  theme = shinytheme("slate"),
-  titlePanel("TYTUL"),
-  sidebarLayout(
-    sidebarPanel(
-      dateRangeInput(inputId = "dateRange",
-                     label = "Date range",
-                     start = Sys.Date() - 365,
-                     end = Sys.Date(),
-                     format = "dd-mm-yyyy",
-                     weekstart = 1),
-      
-      # checkboxGroupInput(inputId = "persons",
-      #                    label = "hehe",
-      #                    choices =  c("Kuba K.", "Kuba L.", "Bartek S.")),
-      
-      tags$div(HTML(
-        '<div id="persons" class="form-group shiny-input-checkboxgroup shiny-input-container shiny-bound-input">
+library(dygraphs)
+library(datasets)
+library(zoo)
+library(xts)
+library(dplyr)
+library(gridExtra)
+
+source("R_plots/data_messages_over_years.R")
+
+
+
+ui <- fluidPage(theme = shinytheme("slate"),
+                titlePanel("TYTUL"),
+                sidebarLayout(
+                  sidebarPanel(
+                    dateRangeInput(
+                      inputId = "dateRange",
+                      label = "Date range",
+                      start = Sys.Date() - 365,
+                      end = Sys.Date(),
+                      format = "dd-mm-yyyy",
+                      weekstart = 1
+                    ),
+                    
+                    # checkboxGroupInput(inputId = "persons",
+                    #                    label = "hehe",
+                    #                    choices =  c("Kuba K.", "Kuba L.", "Bartek S.")),
+                    
+                    tags$div(
+                      HTML(
+                        '<div id="persons" class="form-group shiny-input-checkboxgroup shiny-input-container shiny-bound-input">
         <label class="control-label" for="persons">hehe</label>
           <div class="shiny-options-group">
             <div class="checkbox">
@@ -56,34 +69,138 @@ ui <- fluidPage(
           </div>
         </div>
         '
-      ))
-    ),
-
-    mainPanel(
-      tabsetPanel(
-        tabPanel("tab1", "Hello"),
-        tabPanel("The Most Used Emojis", br(),
-                 plotOutput("emojiPlot")),
-        tabPanel("tab3", br(),
-                 selectInput(inputId = "dayOfWeek",
-                             label = "Day of the week",
-                             choices = c("Monday", "Tuesday", "Wednesday",
-                                         "Thursday", "Friday", "Saturday",
-                                         "Sunday", "all???")))
-      )
-    )
-  )
-)
+                      )
+                    )
+                  ),
+                  
+                  mainPanel(tabsetPanel(
+                    tabPanel("Data over time1", mainPanel(
+                      dygraphOutput("dygraph"),
+                      fluidRow(column(
+                        12,
+                        plotOutput(outputId = "boxplots"),
+                        actionButton("do", "Click Me")
+                      ))
+                    )),
+                    tabPanel("The Most Used Emojis", br(),
+                             plotOutput("emojiPlot")),
+                    tabPanel(
+                      "tab3",
+                      br(),
+                      selectInput(
+                        inputId = "dayOfWeek",
+                        label = "Day of the week",
+                        choices = c(
+                          "Monday",
+                          "Tuesday",
+                          "Wednesday",
+                          "Thursday",
+                          "Friday",
+                          "Saturday",
+                          "Sunday",
+                          "all???"
+                        )
+                      )
+                    )
+                  ))
+                ))
 
 server <- function(input, output, session) {
   output$emojiPlot <- renderPlot({
-    if (length(input$persons) == 0){
+    if (length(input$persons) == 0) {
       return(NULL)
     }
     plot_emoji(input$dateRange[1], input$dateRange[2],
                input$persons)
     
   })
+  
+  
+  ############ Tab 1 functionality
+  
+  output$dygraph <- renderDygraph({
+    dygraph(total_xts) %>% dyRangeSelector() %>%
+      dyShading(from = min(index(total_xts)),
+                to = max(index(total_xts)),
+                color = "#fdf6e3") %>%
+      dyAxis(name = "x", axisLabelColor = "white") %>%
+      dyAxis(name = "y", axisLabelColor = "white")
+    
+    
+  })
+  
+
+  
+  data_box <- eventReactive(input$do, {
+    date_start <-
+      strftime(req(input$dygraph_date_window[[1]]), "%Y-%m-%d")
+    date_end <-
+      strftime(req(input$dygraph_date_window[[2]]), "%Y-%m-%d")
+    
+    
+    out <- list()
+    
+    
+    out$Koziel <-
+      mess_Koziel %>% filter(date > as.Date(date_start) &
+                               date < as.Date(date_end))
+    out$Lis <-
+      mess_Lis %>% filter(date > as.Date(date_start) &
+                            date < as.Date(date_end))
+    out$Sawicki <-
+      mess_Sawicki %>% filter(date > as.Date(date_start) &
+                                date < as.Date(date_end))
+    
+    return(out)
+    
+    
+  })
+  
+
+  
+  
+  
+  box_Koziel <- reactive({
+    if (!"Kuba K." %in% input$persons)
+      return(NULL)
+    ggplot(data_box()$Koziel , aes(x = day_of_the_week, y = length)) + geom_boxplot() + scale_y_log10() +
+      theme_minimal() +
+      theme_solarized()
+  })
+  box_Lis <- reactive({
+    if (!"Kuba L." %in% input$persons)
+      return(NULL)
+    ggplot(data_box()$Lis , aes(x = day_of_the_week, y = length)) + geom_boxplot() + scale_y_log10() +
+      theme_minimal() +
+      theme_solarized()
+  })
+  box_Sawicki <- reactive({
+    if (!"Bartek S." %in% input$persons)
+      return(NULL)
+    ggplot(data_box()$Sawicki , aes(x = day_of_the_week, y = length)) +
+      geom_boxplot() + scale_y_log10()  +
+      theme_minimal() +
+      theme_solarized()
+  })
+  
+  
+  output$boxplots = renderPlot({
+    ptlist <- list(box_Koziel(), box_Lis(), box_Sawicki())
+    
+    
+    
+    to_delete <- !sapply(ptlist, is.null)
+    ptlist <- ptlist[to_delete]
+    
+    if (length(ptlist) == 0)
+      return(NULL)
+    
+    grid.arrange(grobs = ptlist, ncol = length(ptlist))
+  })
+  
+  ############ End of tab 1 functionality
+  
+  
 }
 
 shinyApp(ui, server)
