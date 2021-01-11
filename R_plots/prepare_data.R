@@ -4,12 +4,19 @@ library(stringr)
 
 path <- "data_preparation/data"
 
-messages_Kuba_Lis_emoji <- read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')) %>%
+messages_Kuba_Lis <- read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = ''))
+messages_Bartek_Sawicki <- read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = '')) 
+messages_Jakub_Koziel <- read_csv(paste(path,"/messages_Jakub_Kozieł.csv",sep = '')) 
+
+
+messages_Kuba_Lis_emoji <- messages_Kuba_Lis %>%
   filter(!is.na(emojis))
-messages_Bartek_Sawicki_emoji <- read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = '')) %>%
+messages_Bartek_Sawicki_emoji <- messages_Bartek_Sawicki %>%
   filter(!is.na(emojis))
-messages_Jakub_Koziel_emoji <- read_csv(paste(path,"/messages_Jakub_Kozieł.csv",sep = '')) %>%
+messages_Jakub_Koziel_emoji <- messages_Jakub_Koziel %>%
   filter(!is.na(emojis))
+
+all_messages <- rbind(cbind(messages_Kuba_Lis,person = "Kuba L."), rbind(cbind(messages_Bartek_Sawicki,person = "Bartek S."),cbind(messages_Jakub_Koziel,person = "Kuba K.")))
 
 messages <- rbind(
   rbind(messages_Kuba_Lis_emoji, messages_Bartek_Sawicki_emoji),
@@ -113,6 +120,27 @@ plot_emoji <- function(start, end, ppl) {
     theme_minimal() +
     labs(x = NULL) +
     scale_fill_manual(values=c('#F2133C','#5741A6', '#F2BD1D')) +
+    scale_y_continuous(expand = c(0, 0))+
     theme_solarized() +
     theme(axis.text.x = element_markdown())
+}
+
+# tab 3 functionality
+plot_activity_time <- function(start, end, ppl, weekday){
+  if(weekday != "all"){
+    tmp_df <- all_messages %>%
+      filter(day_of_the_week == weekday)
+  }else{
+    tmp_df <- all_messages
+  }
+  tmp_df %>% filter(person %in% ppl) %>%
+    filter(date>start)%>%
+    filter(date<end)%>%
+    ggplot()+
+    geom_bar(aes(x = floored_hour, group = person, fill = person),stat = "count", position = position_dodge(preserve = 'single'))+
+    xlab("message hour") + 
+    ylab("number of messages")+
+    scale_y_continuous(expand = c(0, 0))+
+    scale_fill_manual(values=c('#F2133C','#5741A6', '#F2BD1D'))+
+    theme_solarized()
 }
