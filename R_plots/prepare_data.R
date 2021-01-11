@@ -145,6 +145,8 @@ plot_activity_time <- function(start, end, ppl, weekday){
     xlab("message hour") + 
     ylab("number of messages")+
     scale_y_continuous(expand = c(0, 0))+
-    scale_fill_manual(values=c('#F2133C','#5741A6', '#F2BD1D'))+
+    scale_fill_manual(values=c("Kuba L." = '#5741A6',
+                               "Kuba K." = '#F2133C',
+                               "Bartek S." = '#F2BD1D'))+
     theme_solarized()
 }
