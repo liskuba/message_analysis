@@ -112,6 +112,7 @@ plot_emoji <- function(start, end, ppl) {
       )
     )
   }
+
   
   
   

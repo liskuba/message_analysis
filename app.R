@@ -157,7 +157,7 @@ server <- function(input, output, session) {
         dySeries("Lis", color = '#5741A6') %>%
         dySeries("Sawicki", color = '#F2BD1D')
     }
-    
+
     
   })
   
