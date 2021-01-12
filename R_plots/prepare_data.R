@@ -47,6 +47,14 @@ plot_emoji <- function(start, end, ppl) {
     "label" = NULL
   )
   
+  messK <- messages_Jakub_Koziel_emoji %>%
+    filter(timestamp > 1000 * as.numeric(as.POSIXct(
+      as.character(start), format="%Y-%m-%d"
+    ))) %>%
+    filter(timestamp < 1000 * as.numeric(as.POSIXct(
+      as.character(end), format="%Y-%m-%d"
+    )))
+  
   messL <- messages_Kuba_Lis_emoji %>%
     filter(timestamp > 1000 * as.numeric(as.POSIXct(
       as.character(start), format="%Y-%m-%d"
@@ -63,13 +71,6 @@ plot_emoji <- function(start, end, ppl) {
       as.character(end), format="%Y-%m-%d"
     )))
   
-  messK <- messages_Jakub_Koziel_emoji %>%
-    filter(timestamp > 1000 * as.numeric(as.POSIXct(
-      as.character(start), format="%Y-%m-%d"
-    ))) %>%
-    filter(timestamp < 1000 * as.numeric(as.POSIXct(
-      as.character(end), format="%Y-%m-%d"
-    )))
   
   for (mess in paste0(rep("mess", length(ppl)),
                       str_sub(ppl, -2, -2))) {
@@ -113,13 +114,16 @@ plot_emoji <- function(start, end, ppl) {
   }
   
   
+  
   df %>%
     ggplot(aes(fct_reorder(label, numberOfUses, .desc = TRUE), numberOfUses,
                fill = person)) +
     geom_col(position = position_dodge()) +
     theme_minimal() +
     labs(x = NULL) +
-    scale_fill_manual(values=c('#F2133C','#5741A6', '#F2BD1D')) +
+    scale_fill_manual(values=c("Kuba L." = '#5741A6',
+                               "Kuba K." = '#F2133C',
+                               "Bartek S." = '#F2BD1D')) +
     scale_y_continuous(expand = c(0, 0))+
     theme_solarized() +
     theme(axis.text.x = element_markdown())
@@ -141,6 +145,8 @@ plot_activity_time <- function(start, end, ppl, weekday){
     xlab("message hour") + 
     ylab("number of messages")+
     scale_y_continuous(expand = c(0, 0))+
-    scale_fill_manual(values=c('#F2133C','#5741A6', '#F2BD1D'))+
+    scale_fill_manual(values=c("Kuba L." = '#5741A6',
+                               "Kuba K." = '#F2133C',
+                               "Bartek S." = '#F2BD1D'))+
     theme_solarized()
 }

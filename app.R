@@ -75,15 +75,18 @@ ui <- fluidPage(theme = shinytheme("slate"),
                   ),
                   
                   mainPanel(tabsetPanel(
-                    tabPanel("Data over time1", mainPanel(
-                      dygraphOutput("dygraph"),
-                      fluidRow(column(
-                        12,
-                        plotOutput(outputId = "boxplots"),
-                        actionButton("do", "Click Me")
-                      ))
-                    )),
-                    tabPanel("The Most Used Emojis", br(),
+                    tabPanel(
+                      "Data over time",
+                      mainPanel(
+                        dygraphOutput("dygraph", width = "150%"),
+                        checkboxInput("checkbox", "Aplly 14-days rolling average", FALSE),
+                        actionButton("do", "Generate boxplots"),
+                        plotOutput(outputId = "boxplots", width = "150%")
+                        
+                        
+                      )
+                    ),
+                    tabPanel("The most used emojis", br(),
                              plotOutput("emojiPlot")),
                     tabPanel(
                       "Activity time",
@@ -118,30 +121,47 @@ server <- function(input, output, session) {
     
   })
   
-  ### Tab 3 
+  ### Tab 3
   output$activityPlot <- renderPlot({
     if (length(input$persons) == 0) {
       return(NULL)
     }
-    plot_activity_time(input$dateRange[1], input$dateRange[2],
-               input$persons, input$dayOfWeek)
-  })  
+    plot_activity_time(input$dateRange[1],
+                       input$dateRange[2],
+                       input$persons,
+                       input$dayOfWeek)
+  })
   
   
   ############ Tab 1 functionality
   
   output$dygraph <- renderDygraph({
-    dygraph(total_xts) %>% dyRangeSelector() %>%
-      dyShading(from = min(index(total_xts)),
-                to = max(index(total_xts)),
-                color = "#fdf6e3") %>%
-      dyAxis(name = "x", axisLabelColor = "white") %>%
-      dyAxis(name = "y", axisLabelColor = "white")
+    if (input$checkbox) {
+      dygraph(total_xts_rolling) %>% dyRangeSelector() %>%
+        dyShading(from = min(index(total_xts)),
+                  to = max(index(total_xts)),
+                  color = "#fdf6e3") %>%
+        dyAxis(name = "x", axisLabelColor = "white") %>%
+        dyAxis(name = "y", axisLabelColor = "white") %>%
+        dySeries("Koziel", color = '#F2133C') %>%
+        dySeries("Lis", color = '#5741A6') %>%
+        dySeries("Sawicki", color = '#F2BD1D')
+    } else {
+      dygraph(total_xts) %>% dyRangeSelector() %>%
+        dyShading(from = min(index(total_xts)),
+                  to = max(index(total_xts)),
+                  color = "#fdf6e3") %>%
+        dyAxis(name = "x", axisLabelColor = "white") %>%
+        dyAxis(name = "y", axisLabelColor = "white") %>%
+        dySeries("Koziel", color = '#F2133C') %>%
+        dySeries("Lis", color = '#5741A6') %>%
+        dySeries("Sawicki", color = '#F2BD1D')
+    }
     
     
   })
   
-
+  
   
   data_box <- eventReactive(input$do, {
     date_start <-
@@ -168,31 +188,36 @@ server <- function(input, output, session) {
     
   })
   
-
   
   
   
   box_Koziel <- reactive({
     if (!"Kuba K." %in% input$persons)
       return(NULL)
-    ggplot(data_box()$Koziel , aes(x = day_of_the_week, y = length)) + geom_boxplot() + scale_y_log10() +
+    ggplot(data_box()$Koziel, aes(x = day_of_the_week, y = length)) + geom_boxplot(fill = '#F2133C',
+                                                                                   color = '#F2133C',
+                                                                                   alpha = 0.2) + scale_y_log10() +
       theme_minimal() +
-      theme_solarized()
+      theme_solarized() + ylab("message length") + xlab("")
   })
   box_Lis <- reactive({
     if (!"Kuba L." %in% input$persons)
       return(NULL)
-    ggplot(data_box()$Lis , aes(x = day_of_the_week, y = length)) + geom_boxplot() + scale_y_log10() +
+    ggplot(data_box()$Lis , aes(x = day_of_the_week, y = length)) + geom_boxplot(fill = '#5741A6',
+                                                                                 color = '#5741A6',
+                                                                                 alpha = 0.2) + scale_y_log10() +
       theme_minimal() +
-      theme_solarized()
+      theme_solarized() + ylab("message length") + xlab("")
   })
   box_Sawicki <- reactive({
     if (!"Bartek S." %in% input$persons)
       return(NULL)
-    ggplot(data_box()$Sawicki , aes(x = day_of_the_week, y = length)) +
-      geom_boxplot() + scale_y_log10()  +
+    ggplot(data_box()$Sawicki, aes(x = day_of_the_week, y = length)) +
+      geom_boxplot(fill = '#F2BD1D',
+                   color = '#F2BD1D',
+                   alpha = 0.2) + scale_y_log10()  +
       theme_minimal() +
-      theme_solarized()
+      theme_solarized() + ylab("message length") + xlab("")
   })
   
   
