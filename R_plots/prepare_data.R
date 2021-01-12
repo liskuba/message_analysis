@@ -115,6 +115,7 @@ plot_emoji <- function(start, end, ppl) {
 
   
   
+  
   df %>%
     ggplot(aes(fct_reorder(label, numberOfUses, .desc = TRUE), numberOfUses,
                fill = person)) +
