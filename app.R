@@ -72,7 +72,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       mainPanel(
                         dygraphOutput("dygraph", width = "150%"),
                         checkboxInput("checkbox", "Apply 14-days rolling average", FALSE),
-
+                        
                         actionButton("do", "Generate boxplots"),
                         plotOutput(outputId = "boxplots", width = "150%")
                         
@@ -88,9 +88,18 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                format = "dd-mm-yyyy",
                                weekstart = 1
                              ),
-                             actionButton("emojiButton", "Generate chart"),
+                             actionButton("emojiButton", "Submit"),
                              br(), br(),
-                             plotOutput("emojiPlot")),
+                             plotOutput("emojiPlot"),
+                             br(),
+                             verbatimTextOutput("textKubaK"),
+                             dataTableOutput("emojiKubaK"),
+                             br(),
+                             verbatimTextOutput("textKubaL"),
+                             dataTableOutput("emojiKubaL"),
+                             br(),
+                             verbatimTextOutput("textBartekS"),
+                             dataTableOutput("emojiBartekS")),
                     tabPanel(
                       "Activity time",
                       br(),
@@ -127,15 +136,50 @@ server <- function(input, output, session) {
   ### Tab 2
   
   observeEvent(input$emojiButton, {
+    ppl <- isolate(input$persons)
     output$emojiPlot <- renderPlot({
-      ppl <- isolate(input$persons)
       if (length(ppl) == 0) {
         return(NULL)
       }
       plot_emoji(isolate(input$dateRange[1]),
                  isolate(input$dateRange[2]), ppl)
-      
     })
+    if ("Kuba K." %in% ppl) {
+      output$textKubaK <- renderText("Kuba K.")
+      output$emojiKubaK <- renderDataTable(
+        prepare_data_table(isolate(input$dateRange[1]),
+                           isolate(input$dateRange[2]), "Kuba K."),
+        options = list(pageLength = 5),
+        style = "bootstrap",
+        escape = 1)
+    } else {
+      output$emojiKubaK <- NULL
+      output$textKubaK <- NULL
+    }
+    if ("Kuba L." %in% ppl) {
+      output$textKubaL <- renderText("Kuba L.")
+      output$emojiKubaL <- renderDataTable(
+        prepare_data_table(isolate(input$dateRange[1]),
+                           isolate(input$dateRange[2]), "Kuba L."),
+        options = list(pageLength = 5),
+        style = "bootstrap",
+        escape = 1)
+    } else {
+      output$emojiKubaL <- NULL
+      output$textKubaL <- NULL
+    }
+    if ("Bartek S." %in% ppl) {
+      output$textBartekS <- renderText("Bartek S.")
+      output$emojiBartekS <- renderDataTable(
+        prepare_data_table(isolate(input$dateRange[1]),
+                           isolate(input$dateRange[2]), "Bartek S."),
+        options = list(pageLength = 5),
+        style = "bootstrap",
+        escape = 1)
+    } else {
+      output$emojiBartekS <- NULL
+      output$textBartekS <- NULL
+    }
   })
   
   
@@ -175,7 +219,7 @@ server <- function(input, output, session) {
         dySeries("Lis", color = '#5741A6') %>%
         dySeries("Sawicki", color = '#F2BD1D')
     }
-
+    
     
   })
   
@@ -259,3 +303,4 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
