@@ -87,6 +87,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       )
                     ),
                     tabPanel("The most used emojis", br(),
+                             actionButton("emojiButton", "Generate chart"),
+                             br(), br(),
                              plotOutput("emojiPlot")),
                     tabPanel(
                       "Activity time",
@@ -112,14 +114,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 ))
 
 server <- function(input, output, session) {
-  output$emojiPlot <- renderPlot({
-    if (length(input$persons) == 0) {
-      return(NULL)
-    }
-    plot_emoji(input$dateRange[1], input$dateRange[2],
-               input$persons)
-    
+  
+  ### Tab 2
+  
+  observeEvent(input$emojiButton, {
+    output$emojiPlot <- renderPlot({
+      ppl <- isolate(input$persons)
+      if (length(ppl) == 0) {
+        return(NULL)
+      }
+      plot_emoji(isolate(input$dateRange[1]),
+                 isolate(input$dateRange[2]), ppl)
+      
+    })
   })
+  
   
   ### Tab 3
   output$activityPlot <- renderPlot({
@@ -241,3 +250,4 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
