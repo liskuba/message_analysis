@@ -1,11 +1,10 @@
-
 path <- "data_preparation/data"
 mess_Sawicki <-
   read_csv(paste(path, "/messages_Bartek_Sawicki.csv", sep = ''))
 mess_Lis <-
   read_csv(paste(path, "/messages_Kuba_Lis.csv", sep = ''))
 mess_Koziel <-
-  read_csv(paste(path, "/messages_Jakub_Kozie?.csv", sep = ''))
+  read_csv(paste(path, "/messages_Jakub_Kozieł.csv", sep = ''))
 
 mess_Sawicki$date <-
   format(as.POSIXct(mess_Sawicki$date, format = '%Y-%m-%d %H:%M:%S'),
