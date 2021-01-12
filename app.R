@@ -150,8 +150,7 @@ server <- function(input, output, session) {
         prepare_data_table(isolate(input$dateRange[1]),
                            isolate(input$dateRange[2]), "Kuba K."),
         options = list(pageLength = 5),
-        style = "bootstrap",
-        escape = 1)
+        escape = FALSE)
     } else {
       output$emojiKubaK <- NULL
       output$textKubaK <- NULL
@@ -162,8 +161,7 @@ server <- function(input, output, session) {
         prepare_data_table(isolate(input$dateRange[1]),
                            isolate(input$dateRange[2]), "Kuba L."),
         options = list(pageLength = 5),
-        style = "bootstrap",
-        escape = 1)
+        escape = FALSE)
     } else {
       output$emojiKubaL <- NULL
       output$textKubaL <- NULL
@@ -174,8 +172,7 @@ server <- function(input, output, session) {
         prepare_data_table(isolate(input$dateRange[1]),
                            isolate(input$dateRange[2]), "Bartek S."),
         options = list(pageLength = 5),
-        style = "bootstrap",
-        escape = 1)
+        escape = FALSE)
     } else {
       output$emojiBartekS <- NULL
       output$textBartekS <- NULL
