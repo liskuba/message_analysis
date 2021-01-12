@@ -31,7 +31,6 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 titlePanel("My Facebook Data"),
                 sidebarLayout(
                   sidebarPanel(
-                   
                     
                     # checkboxGroupInput(inputId = "persons",
                     #                    label = "hehe",
@@ -73,6 +72,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       mainPanel(
                         dygraphOutput("dygraph", width = "150%"),
                         checkboxInput("checkbox", "Apply 14-days rolling average", FALSE),
+
                         actionButton("do", "Generate boxplots"),
                         plotOutput(outputId = "boxplots", width = "150%")
                         
