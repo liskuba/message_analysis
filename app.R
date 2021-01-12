@@ -12,7 +12,6 @@ library(rvest)
 library(ggtext)
 # devtools::install_github("hadley/emo")
 library(emo)
-source("R_plots/prepare_data.R")
 
 
 library(dygraphs)
@@ -23,6 +22,8 @@ library(dplyr)
 library(gridExtra)
 
 source("R_plots/data_messages_over_years.R")
+source("R_plots/prepare_data.R")
+
 
 
 
@@ -83,9 +84,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       ))
                     )),
                     tabPanel("The Most Used Emojis", br(),
+                             actionButton("buttonEmoji", "Click Me"),
+                             br(), br(),
                              plotOutput("emojiPlot")),
                     tabPanel(
-                      "tab3",
+                      "Activity time",
                       br(),
                       selectInput(
                         inputId = "dayOfWeek",
@@ -98,22 +101,40 @@ ui <- fluidPage(theme = shinytheme("slate"),
                           "Friday",
                           "Saturday",
                           "Sunday",
-                          "all???"
+                          "all"
                         )
-                      )
+                      ),
+                      br(),
+                      plotOutput("activityPlot")
                     )
                   ))
                 ))
 
 server <- function(input, output, session) {
-  output$emojiPlot <- renderPlot({
+  
+  ### Tab 2
+  
+  observeEvent(input$buttonEmoji, {
+    ppl <- isolate(input$persons)
+    output$emojiPlot <- renderPlot({
+      if (length(ppl) == 0) {
+        return(NULL)
+      } else {
+        plot_emoji(isolate(input$dateRange[1]),
+                   isolate(input$dateRange[2]), ppl)
+      }
+    })
+  })
+  
+  
+  ### Tab 3 
+  output$activityPlot <- renderPlot({
     if (length(input$persons) == 0) {
       return(NULL)
     }
-    plot_emoji(input$dateRange[1], input$dateRange[2],
-               input$persons)
-    
-  })
+    plot_activity_time(input$dateRange[1], input$dateRange[2],
+               input$persons, input$dayOfWeek)
+  })  
   
   
   ############ Tab 1 functionality

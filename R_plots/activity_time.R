@@ -1,4 +1,3 @@
-
 library(readr)
 library(ggplot2)
 library(dplyr)
@@ -7,13 +6,12 @@ library(dplyr)
 path <- "../data_preparation/data"
 
 messages <- cbind(read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = '')),person = "Bartek")
-messages <- rbind(messages, cbind(read_csv(paste(path,"/Kuba_Lis_1.csv",sep = '')),person = "Kuba L"))
-# messages <- rbind(messages, cbind(read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')),person = "Kuba L"))
-# messages <- rbind(messages, cbind(read_csv(paste(path,"/messages_Kuba_Koziel.csv",sep = '')), person = "Kuba K"))
+messages <- rbind(messages, cbind(read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = '')),person = "Kuba L"))
+messages <- rbind(messages, cbind(read_csv(paste(path,"/messages_Jakub_Koziel.csv",sep = '')), person = "Kuba K"))
 
 notifications <- cbind(read_csv(paste(path,"/notifications_Bartek_Sawicki.csv",sep = '')),person = "Bartek")
-# notifications <- rbind(notifications, cbind(read_csv(paste(path,"/notifications_Kuba_Lis.csv",sep = '')),person = "Kuba L"))
-# notifications <- rbind(notifications, cbind(read_csv(paste(path,"/notifications_Kuba_Koziel.csv",sep = '')), person = "Kuba K"))
+notifications <- rbind(notifications, cbind(read_csv(paste(path,"/notifications_Kuba_Lis.csv",sep = '')),person = "Kuba L"))
+notifications <- rbind(notifications, cbind(read_csv(paste(path,"/notifications_Jakub_Koziel.csv",sep = '')), person = "Kuba K"))
 
 notifications %>%
   ggplot()+
