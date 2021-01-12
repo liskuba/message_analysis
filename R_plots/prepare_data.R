@@ -112,7 +112,6 @@ plot_emoji <- function(start, end, ppl) {
       )
     )
   }
-
   
   
   
@@ -128,6 +127,36 @@ plot_emoji <- function(start, end, ppl) {
     scale_y_continuous(expand = c(0, 0))+
     theme_solarized() +
     theme(axis.text.x = element_markdown())
+}
+
+prepare_data_table <- function(start, end, person) {
+  if (person == "Kuba K.") {
+    mess <- messages_Jakub_Koziel_emoji
+  } else if (person == "Kuba L.") {
+    mess <- messages_Kuba_Lis_emoji 
+  } else { mess <- messages_Bartek_Sawicki_emoji }
+  mess <- mess %>%
+    filter(timestamp > 1000 * as.numeric(as.POSIXct(
+      as.character(start), format="%Y-%m-%d"
+    ))) %>%
+    filter(timestamp < 1000 * as.numeric(as.POSIXct(
+      as.character(end), format="%Y-%m-%d"
+    )))
+  df <- data.frame(
+    "emoji" = all_emojis$emoji,
+    "label" = all_emojis$label,
+    "numberOfUses" = rep(0, nrow(all_emojis))
+  )
+  for(i in 1:nrow(df)) {
+    df[i, "numberOfUses"] <- sum(
+      str_count(mess$emojis, df[i,"emoji"])
+    )
+  }
+  df <- df %>% select(label, numberOfUses) %>%
+    arrange(desc(numberOfUses))
+  names(df) <- c("emoji", "numberOfUses")
+  
+  return(df)
 }
 
 # tab 3 functionality
