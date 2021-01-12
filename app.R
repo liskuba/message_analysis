@@ -31,14 +31,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 titlePanel("My Facebook Data"),
                 sidebarLayout(
                   sidebarPanel(
-                    dateRangeInput(
-                      inputId = "dateRange",
-                      label = "Date range",
-                      start = Sys.Date() - 365,
-                      end = Sys.Date(),
-                      format = "dd-mm-yyyy",
-                      weekstart = 1
-                    ),
+                   
                     
                     # checkboxGroupInput(inputId = "persons",
                     #                    label = "hehe",
@@ -47,7 +40,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                     tags$div(
                       HTML(
                         '<div id="persons" class="form-group shiny-input-checkboxgroup shiny-input-container shiny-bound-input">
-        <label class="control-label" for="persons">hehe</label>
+        <label class="control-label" for="persons">Choose people</label>
           <div class="shiny-options-group">
             <div class="checkbox">
               <label>
@@ -79,7 +72,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       "Data over time",
                       mainPanel(
                         dygraphOutput("dygraph", width = "150%"),
-                        checkboxInput("checkbox", "Aplly 14-days rolling average", FALSE),
+                        checkboxInput("checkbox", "Apply 14-days rolling average", FALSE),
                         actionButton("do", "Generate boxplots"),
                         plotOutput(outputId = "boxplots", width = "150%")
                         
@@ -87,12 +80,28 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       )
                     ),
                     tabPanel("The most used emojis", br(),
+                             dateRangeInput(
+                               inputId = "dateRange",
+                               label = "Date range",
+                               start = Sys.Date() - 365,
+                               end = Sys.Date(),
+                               format = "dd-mm-yyyy",
+                               weekstart = 1
+                             ),
                              actionButton("emojiButton", "Generate chart"),
                              br(), br(),
                              plotOutput("emojiPlot")),
                     tabPanel(
                       "Activity time",
                       br(),
+                      dateRangeInput(
+                        inputId = "dateRangeActivity",
+                        label = "Date range",
+                        start = Sys.Date() - 365,
+                        end = Sys.Date(),
+                        format = "dd-mm-yyyy",
+                        weekstart = 1
+                      ),
                       selectInput(
                         inputId = "dayOfWeek",
                         label = "Day of the week",
@@ -135,8 +144,8 @@ server <- function(input, output, session) {
     if (length(input$persons) == 0) {
       return(NULL)
     }
-    plot_activity_time(input$dateRange[1],
-                       input$dateRange[2],
+    plot_activity_time(input$dateRangeActivity[1],
+                       input$dateRangeActivity[2],
                        input$persons,
                        input$dayOfWeek)
   })
