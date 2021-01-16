@@ -43,22 +43,29 @@ ui <- fluidPage(theme = shinytheme("slate"),
         <label class="control-label" for="persons">Choose people</label>
           <div class="shiny-options-group">
             <div class="checkbox">
-              <label>
+            <label>
+              
               <input type="checkbox" name="persons" value="Kuba K.">
+              <div style="width:128px;height:128px;border:4px solid #F2133C;background:#F2133C">
               <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&ccb=2&_nc_sid=7206a8&_nc_ohc=ZUBgBA4cH8QAX9IyWEj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-waw1-1.xx&tp=27&oh=502ad4ebf86d02d6adcfa22dccd701d7&oe=601F529E" height = "120"/></span>
               </label>
+              </div>
             </div>
             <div class="checkbox">
               <label>
               <input type="checkbox" name="persons" value="Kuba L.">
+              <div style="width:128px;height:128px;border:4px solid #5741A6;background:#5741A6">
               <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.0-1/p100x100/122856167_1760056047475701_3097338334731053317_o.jpg?_nc_cat=108&ccb=2&_nc_sid=7206a8&_nc_ohc=BN2tqo9jmG0AX8FfTPI&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-waw1-1.xx&tp=6&oh=1d4df0ff84a0b36b581b57fcd600968f&oe=601EC427" height = "120"></span>
               </label>
+              </div>
             </div>
             <div class="checkbox">
               <label>
               <input type="checkbox" name="persons" value="Bartek S.">
+              <div style="width:128px;height:128px;border:4px solid #F2BD1D;background:#F2BD1D">
               <span><img src="https://scontent.fktw4-1.fna.fbcdn.net/v/t1.0-1/c83.50.576.576a/s100x100/1526556_254831838188045_5566807436520804551_n.jpg?_nc_cat=100&ccb=2&_nc_sid=7206a8&_nc_ohc=96FyKJ2bBDEAX9TUYug&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fktw4-1.fna&tp=28&oh=1babfa68d12441d29aafe93a7253c1c5&oe=60291148" height = "120"></span>
               </label>
+              </div>  
             </div>
           </div>
         </div>
