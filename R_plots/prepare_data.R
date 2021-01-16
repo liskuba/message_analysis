@@ -199,4 +199,5 @@ plot_activity_time <- function(start, end, ppl, weekday){
   
   ggplotly(plot, tooltip = c("count")) %>%
     config(displayModeBar = FALSE)
+
 }
