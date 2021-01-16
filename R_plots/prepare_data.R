@@ -1,3 +1,4 @@
+
 library(readr)
 library(dplyr)
 library(stringr)
@@ -44,7 +45,7 @@ counter <- data.frame("emoji" = NULL, "usage" = NULL,
 for(i in 1:nrow(all_emojis)) {
   emoji <- all_emojis[[i,"emoji"]]
   counter[i, "emoji"] <- emoji
-  counter[i, "usage"] <- sum(str_count(messages$emojis, emoji))
+  counter[i, "usage"] <- sum(str_count(messages$emojis, as.character(emoji) ))
   counter[i, "url"] <- all_emojis[i,"url"]
   counter[i, "label"] <- all_emojis[i,"label"]
 }
@@ -86,7 +87,7 @@ plot_emoji <- function(start, end, ppl) {
     
     for(i in 1:nrow(all_emojis)) {
       counter[i, "usage"] <- sum(
-        str_count(mess$emojis, counter[i,"emoji"])
+        str_count(mess$emojis, as.character(counter[i,"emoji"]) )
       )
     }
     n <- nrow(emojis)
@@ -112,7 +113,7 @@ plot_emoji <- function(start, end, ppl) {
     df[i, "numberOfUses"] <- sum(
       str_count(
         get(paste0('mess', str_sub(df[[i, "person"]],-2,-2)))$emojis,
-        df[i,"emoji"]
+        as.character(df[i,"emoji"])
       )
     )
   }
@@ -153,7 +154,7 @@ prepare_data_table <- function(start, end, person) {
   
   for(i in 1:nrow(df)) {
     df[i, "numberOfUses"] <- sum(
-      str_count(mess$emojis, df[i,"emoji"])
+      str_count(mess$emojis, as.character(df[i,"emoji"]) )
     )
   }
   
