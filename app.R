@@ -72,7 +72,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
         '
                       )
                     )
-                  ,width = 2),
+                    ,width = 2),
                   
                   mainPanel(tabsetPanel(
                     tabPanel(
@@ -196,10 +196,10 @@ server <- function(input, output, session) {
 
   output$activityPlot <- renderUI({
     if (length(input$persons) > 0) {
-      plotlyOutput("activityPlot2")
+      plotOutput("activityPlot2")
     } else { verbatimTextOutput("activityText") }
   })
-  output$activityPlot2 <- renderPlotly({
+  output$activityPlot2 <- renderPlot({
 
     plot_activity_time(input$dateRangeActivity[1],
                        input$dateRangeActivity[2],
