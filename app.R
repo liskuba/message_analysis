@@ -76,16 +76,31 @@ ui <- fluidPage(theme = shinytheme("slate"),
                   
                   mainPanel(tabsetPanel(
                     tabPanel(
-                      "Data over time",
-                      mainPanel(
-                        dygraphOutput("dygraph", width = "150%"),
-                        radioButtons("rollingAverage","Rolling average", choices = c("No rolling average", "Apply 15-days rolling average", "Apply 30-days rolling average", "Apply 60-days rolling average"), selected = "No rolling average"),
-                        
-                        actionButton("do", "Generate boxplots"),
-                        uiOutput(outputId = "boxplotsUI", width = "150%")
-                        
-                        
-                      )
+        "Data over time",
+        br(),
+        mainPanel(
+          dygraphOutput("dygraph", width = "150%"),
+          br(),
+          radioButtons(
+            "rollingAverage",
+            "Rolling average",
+            choices = c(
+              "No rolling average",
+              "Apply 15-days rolling average",
+              "Apply 30-days rolling average",
+              "Apply 60-days rolling average"
+            ),
+            selected = "No rolling average",
+            inline = TRUE
+          ),
+          br(),
+          actionButton("do", "Generate boxplots"),
+          br(),
+          br(),
+          uiOutput(outputId = "boxplotsUI", width = "150%")
+          
+          
+        )
                     ),
                     tabPanel("The most used emojis", br(),
                              dateRangeInput(
@@ -213,26 +228,24 @@ server <- function(input, output, session) {
   
   ############ Tab 1 functionality
   
+    
   output$dygraph <- renderDygraph({
-    
-    
     if (input$rollingAverage == "No rolling average") {
+      fig <-
+        dygraph(total_xts,  ylab = "Number of sent messages in each day")
       
-      fig <- dygraph(total_xts) 
-    
-    } else if (input$rollingAverage == "Apply 15-days rolling average"){
+    } else if (input$rollingAverage == "Apply 15-days rolling average") {
+      fig <-
+        dygraph(total_xts_rolling_small, ylab = "Number of sent messages in each day")
       
-      
-      fig <- dygraph(total_xts_rolling_small) 
-    
     } else if (input$rollingAverage == "Apply 30-days rolling average") {
+      fig <-
+        dygraph(total_xts_rolling_mid, ylab = "Number of sent messages in each day")
       
-      fig <- dygraph(total_xts_rolling_mid) 
-    
     } else  {
+      fig <-
+        dygraph(total_xts_rolling_big, ylab = "Number of sent messages in each day")
       
-      fig <- dygraph(total_xts_rolling_big) 
-    
     }
     
     
@@ -247,20 +260,22 @@ server <- function(input, output, session) {
       dySeries("Sawicki", color = '#F2BD1D')
     
     
-    if(!"Kuba K." %in% input$persons){
-      fig <- fig %>% dySeries("Koziel", color = '#F2133C', strokeWidth = 0)
+    if (!"Kuba K." %in% input$persons) {
+      fig <-
+        fig %>% dySeries("Koziel", color = '#F2133C', strokeWidth = 0)
     } else {
       fig <- fig %>% dySeries("Koziel", color = '#F2133C')
     }
     
-    if(!"Kuba L." %in% input$persons){
+    if (!"Kuba L." %in% input$persons) {
       fig <- fig %>% dySeries("Lis", color = '#5741A6', strokeWidth = 0)
     } else {
       fig <- fig %>% dySeries("Lis", color = '#5741A6')
     }
     
-    if(!"Bartek S." %in% input$persons){
-      fig <- fig %>% dySeries("Sawicki", color = '#F2BD1D', strokeWidth = 0)
+    if (!"Bartek S." %in% input$persons) {
+      fig <-
+        fig %>% dySeries("Sawicki", color = '#F2BD1D', strokeWidth = 0)
     } else {
       fig <- fig %>% dySeries("Sawicki", color = '#F2BD1D')
     }
@@ -311,7 +326,16 @@ server <- function(input, output, session) {
                                                                                    color = '#F2133C',
                                                                                    alpha = 0.2) + scale_y_log10(limits = c(NA, y_max)) +
       theme_minimal() +
-      theme_solarized() + ylab("message length") + xlab("")
+      theme_solarized() + ylab("message length") + xlab("") +
+      theme(
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text = element_text(size = 15),
+        legend.title = element_text(size = 18)
+      )
   })
   box_Lis <- reactive({
     if (!"Kuba L." %in% input$persons)
@@ -320,7 +344,16 @@ server <- function(input, output, session) {
                                                                                  color = '#5741A6',
                                                                                  alpha = 0.2) + scale_y_log10(limits = c(NA, y_max)) +
       theme_minimal() +
-      theme_solarized() + ylab("message length") + xlab("")
+      theme_solarized() + ylab("message length") + xlab("") +
+      theme(
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text = element_text(size = 15),
+        legend.title = element_text(size = 18)
+      )
   })
   box_Sawicki <- reactive({
     if (!"Bartek S." %in% input$persons)
@@ -330,12 +363,21 @@ server <- function(input, output, session) {
                    color = '#F2BD1D',
                    alpha = 0.2) + scale_y_log10(limits = c(NA, y_max))  +
       theme_minimal() +
-      theme_solarized() + ylab("message length") + xlab("")
+      theme_solarized() + ylab("message length") + xlab("") +
+      theme(
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.text = element_text(size = 15),
+        legend.title = element_text(size = 18)
+      )
   })
   
   
   output$boxplotsUI <- renderUI({
-    if(length(input$persons)>0){
+    if (length(input$persons) > 0) {
       plotOutput("boxplots", width = "150%")
     } else{
       verbatimTextOutput("boxplotsNoSelection")
@@ -357,6 +399,15 @@ server <- function(input, output, session) {
     
     if (length(ptlist) == 0)
       return(NULL)
+    
+    labs <- c("Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat.", "Sun.")
+    
+    if (length(ptlist) == 3) {
+      ptlist[[1]] <- ptlist[[1]] + scale_x_discrete(labels  = labs)
+      ptlist[[2]] <- ptlist[[2]] + scale_x_discrete(labels  = labs)
+      ptlist[[3]] <- ptlist[[3]] + scale_x_discrete(labels  = labs)
+    }
+    
     
     grid.arrange(grobs = ptlist, ncol = length(ptlist))
   })
