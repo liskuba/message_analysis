@@ -4,23 +4,36 @@ library(stringr)
 
 path <- "data_preparation/data"
 
-messages_Kuba_Lis <- read_csv(paste(path,"/messages_Kuba_Lis.csv",sep = ''))
-messages_Bartek_Sawicki <- read_csv(paste(path,"/messages_Bartek_Sawicki.csv",sep = '')) 
-messages_Jakub_Koziel <- read_csv(paste(path,"/messages_Jakub_Kozieł.csv",sep = '')) 
+names <- c("Kuba", "Jakub", "Bartek")
+surnames <- c("Lis", "Koziel", "Sawicki")
+people <- paste0(names, " ", substr(surnames, 1, 1), ".")
+people[2] <- "Kuba K."
+csv_names <- paste0("messages_", names, "_", surnames)
 
+for (i in 1:3) {
+  
+  # messages_Kuba_Lis <- ...
+  
+  human <- csv_names[i]
+  assign(human, read_csv(paste0(path, "/", human, ".csv")))
+  
+  # messages_Kuba_Lis_emoji <- ...
+  
+  assign(paste0(human, "_emoji"), get(human) %>% filter(!is.na(emojis)))
+} 
 
-messages_Kuba_Lis_emoji <- messages_Kuba_Lis %>%
-  filter(!is.na(emojis))
-messages_Bartek_Sawicki_emoji <- messages_Bartek_Sawicki %>%
-  filter(!is.na(emojis))
-messages_Jakub_Koziel_emoji <- messages_Jakub_Koziel %>%
-  filter(!is.na(emojis))
-
-all_messages <- rbind(cbind(messages_Kuba_Lis,person = "Kuba L."), rbind(cbind(messages_Bartek_Sawicki,person = "Bartek S."),cbind(messages_Jakub_Koziel,person = "Kuba K.")))
+all_messages <- rbind(
+  cbind(get(csv_names[1]), person = people[1]),
+  rbind(
+    cbind(get(csv_names[2]), person = people[2]),
+    cbind(get(csv_names[3]), person = people[3])
+  )
+)
 
 messages <- rbind(
-  rbind(messages_Kuba_Lis_emoji, messages_Bartek_Sawicki_emoji),
-  messages_Jakub_Koziel_emoji
+  rbind(get(paste0(csv_names[1], "_emoji")),
+        get(paste0(csv_names[2], "_emoji"))),
+  get(paste0(csv_names[3], "_emoji"))
 )
 
 all_emojis <- read_csv(paste0(path, "/all_emoji.csv"))
@@ -31,7 +44,7 @@ counter <- data.frame("emoji" = NULL, "usage" = NULL,
 for(i in 1:nrow(all_emojis)) {
   emoji <- all_emojis[[i,"emoji"]]
   counter[i, "emoji"] <- emoji
-  counter[i, "usage"] <- sum(str_count(messages$emojis, emoji))
+  counter[i, "usage"] <- sum(str_count(messages$emojis, as.character(emoji) ))
   counter[i, "url"] <- all_emojis[i,"url"]
   counter[i, "label"] <- all_emojis[i,"label"]
 }
@@ -41,39 +54,30 @@ all_emojis <- counter %>%
 
 plot_emoji <- function(start, end, ppl) {
   
-  emojis <- data.frame(
-    "emoji" = NULL,
-    "url" = NULL,
-    "label" = NULL
-  )
+  emojis <- data.frame("emoji" = NULL, "url" = NULL, "label" = NULL)
   
-  messK <- messages_Jakub_Koziel_emoji %>%
-    filter(timestamp > 1000 * as.numeric(as.POSIXct(
-      as.character(start), format="%Y-%m-%d"
-    ))) %>%
-    filter(timestamp < 1000 * as.numeric(as.POSIXct(
-      as.character(end), format="%Y-%m-%d"
-    )))
+  ffilter <- function(df) {
+    df %>%
+      filter(timestamp > 1000 * as.numeric(as.POSIXct(
+        as.character(start), format="%Y-%m-%d"
+      ))) %>%
+      filter(timestamp < 1000 * as.numeric(as.POSIXct(
+        as.character(end), format="%Y-%m-%d"
+      )))
+  }
   
-  messL <- messages_Kuba_Lis_emoji %>%
-    filter(timestamp > 1000 * as.numeric(as.POSIXct(
-      as.character(start), format="%Y-%m-%d"
-    ))) %>%
-    filter(timestamp < 1000 * as.numeric(as.POSIXct(
-      as.character(end), format="%Y-%m-%d"
-    )))
+  for (i in 1:3) {
+    if (people[i] %in% ppl) {
+      
+      # messLis <- ...
+      
+      assign(paste0("mess", str_sub(people[i], -2, -2)), ffilter(
+        get(paste0(csv_names[i], "_emoji"))
+      ))
+    }
+  }
   
-  messS <- messages_Bartek_Sawicki_emoji %>%
-    filter(timestamp > 1000 * as.numeric(as.POSIXct(
-      as.character(start), format="%Y-%m-%d"
-    ))) %>%
-    filter(timestamp < 1000 * as.numeric(as.POSIXct(
-      as.character(end), format="%Y-%m-%d"
-    )))
-  
-  
-  for (mess in paste0(rep("mess", length(ppl)),
-                      str_sub(ppl, -2, -2))) {
+  for (mess in paste0(rep("mess", length(ppl)), str_sub(ppl, -2, -2))) {
     mess <- get(mess)
     counter <- data.frame("emoji" = all_emojis[,1],
                           "usage" = rep(0, length(all_emojis[,1])),
@@ -82,11 +86,11 @@ plot_emoji <- function(start, end, ppl) {
     
     for(i in 1:nrow(all_emojis)) {
       counter[i, "usage"] <- sum(
-        str_count(mess$emojis, counter[i,"emoji"])
+        str_count(mess$emojis, as.character(counter[i,"emoji"]) )
       )
     }
     n <- nrow(emojis)
-    p <- (length(ppl)**2-9*length(ppl)+24)/2
+    p <- (length(ppl)**2-9*length(ppl)+24) %/% 2
     emojis <- rbind(emojis, arrange(counter, desc(usage)) %>%
                       slice(1:p) %>%
                       filter(usage > 0) %>%
@@ -108,11 +112,11 @@ plot_emoji <- function(start, end, ppl) {
     df[i, "numberOfUses"] <- sum(
       str_count(
         get(paste0('mess', str_sub(df[[i, "person"]],-2,-2)))$emojis,
-        df[i,"emoji"]
+        as.character(df[i,"emoji"])
       )
     )
   }
-
+  
   
   
   df %>%
@@ -127,6 +131,37 @@ plot_emoji <- function(start, end, ppl) {
     scale_y_continuous(expand = c(0, 0))+
     theme_solarized() +
     theme(axis.text.x = element_markdown())
+}
+
+prepare_data_table <- function(start, end, person) {
+  
+  k <- match(person, people)
+  
+  mess <- get(paste0(csv_names[k], "_emoji")) %>%
+    filter(timestamp > 1000 * as.numeric(as.POSIXct(
+      as.character(start), format="%Y-%m-%d"
+    ))) %>%
+    filter(timestamp < 1000 * as.numeric(as.POSIXct(
+      as.character(end), format="%Y-%m-%d"
+    )))
+  
+  df <- data.frame(
+    "emoji" = all_emojis$emoji,
+    "label" = all_emojis$label,
+    "numberOfUses" = rep(0, nrow(all_emojis))
+  )
+  
+  for(i in 1:nrow(df)) {
+    df[i, "numberOfUses"] <- sum(
+      str_count(mess$emojis, as.character(df[i,"emoji"]) )
+    )
+  }
+  
+  df <- df %>% select(label, numberOfUses) %>%
+    arrange(desc(numberOfUses))
+  names(df) <- c("emoji", "numberOfUses")
+  
+  return(df)
 }
 
 # tab 3 functionality

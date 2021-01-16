@@ -4,7 +4,7 @@ mess_Sawicki <-
 mess_Lis <-
   read_csv(paste(path, "/messages_Kuba_Lis.csv", sep = ''))
 mess_Koziel <-
-  read_csv(paste(path, "/messages_Jakub_Kozie³.csv", sep = ''))
+  read_csv(paste(path, "/messages_Jakub_Koziel.csv", sep = ''))
 
 mess_Sawicki$date <-
   format(as.POSIXct(mess_Sawicki$date, format = '%Y-%m-%d %H:%M:%S'),
@@ -95,7 +95,26 @@ mess_Lis$day_of_the_week <- factor(mess_Lis$day_of_the_week , levels=c("Monday",
 mess_Sawicki$day_of_the_week <- factor(mess_Sawicki$day_of_the_week , levels=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 
 
-total_xts_rolling <- total_xts
-total_xts_rolling$Koziel  <- rollmean(total_xts$Koziel, 21, fill = NA, align = "right")
-total_xts_rolling$Lis  <- rollmean(total_xts$Lis, 21, fill=NA, align = "right")
-total_xts_rolling$Sawicki  <- rollmean(total_xts$Sawicki, 21, fill = NA, align = "right")
+total_xts_rolling_small <- total_xts
+total_xts_rolling_small$Koziel  <- rollmean(total_xts$Koziel, 15, fill = NA)
+total_xts_rolling_small$Lis  <- rollmean(total_xts$Lis, 15, fill=NA)
+total_xts_rolling_small$Sawicki  <- rollmean(total_xts$Sawicki, 15, fill = NA)
+
+
+total_xts_rolling_mid <- total_xts
+total_xts_rolling_mid$Koziel  <- rollmean(total_xts$Koziel, 30, fill = NA)
+total_xts_rolling_mid$Lis  <- rollmean(total_xts$Lis, 30, fill=NA)
+total_xts_rolling_mid$Sawicki  <- rollmean(total_xts$Sawicki, 30, fill = NA)
+
+
+
+
+total_xts_rolling_big <- total_xts
+total_xts_rolling_big$Koziel  <- rollmean(total_xts$Koziel, 60, fill = NA)
+total_xts_rolling_big$Lis  <- rollmean(total_xts$Lis, 60, fill=NA)
+total_xts_rolling_big$Sawicki  <- rollmean(total_xts$Sawicki, 60, fill = NA)
+
+
+
+
+y_max <- max(max(mess_Koziel$length),max(mess_Lis$length),max(mess_Sawicki$length))
