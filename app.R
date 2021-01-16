@@ -90,7 +90,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                              ),
                              actionButton("emojiButton", "Submit"),
                              br(), br(),
-                             plotOutput("emojiPlot"),
+                             uiOutput("emojiPlot"),
                              br(),
                              verbatimTextOutput("textKubaK"),
                              dataTableOutput("emojiKubaK"),
@@ -137,13 +137,16 @@ server <- function(input, output, session) {
   
   observeEvent(input$emojiButton, {
     ppl <- isolate(input$persons)
-    output$emojiPlot <- renderPlot({
-      if (length(ppl) == 0) {
-        return(NULL)
-      }
+    output$emojiPlot <- renderUI({
+      if (length(ppl) > 0) {
+        plotOutput("emojiPlot2")
+      } else { verbatimTextOutput("emojiText2") }
+      })
+    output$emojiPlot2 <- renderPlot({
       plot_emoji(isolate(input$dateRange[1]),
                  isolate(input$dateRange[2]), ppl)
     })
+    output$emojiText2 <- renderText("No one was selected")
     if ("Kuba K." %in% ppl) {
       output$textKubaK <- renderText("Kuba K.")
       output$emojiKubaK <- renderDataTable(
@@ -300,4 +303,6 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
+
 
