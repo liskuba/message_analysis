@@ -28,17 +28,9 @@ source("R_plots/prepare_data.R")
 
 
 ui <- fluidPage(theme = shinytheme("slate"),
-                titlePanel("TYTUL"),
+                titlePanel("My Facebook Data"),
                 sidebarLayout(
                   sidebarPanel(
-                    dateRangeInput(
-                      inputId = "dateRange",
-                      label = "Date range",
-                      start = Sys.Date() - 365,
-                      end = Sys.Date(),
-                      format = "dd-mm-yyyy",
-                      weekstart = 1
-                    ),
                     
                     # checkboxGroupInput(inputId = "persons",
                     #                    label = "hehe",
@@ -47,24 +39,24 @@ ui <- fluidPage(theme = shinytheme("slate"),
                     tags$div(
                       HTML(
                         '<div id="persons" class="form-group shiny-input-checkboxgroup shiny-input-container shiny-bound-input">
-        <label class="control-label" for="persons">hehe</label>
+        <label class="control-label" for="persons">Choose people</label>
           <div class="shiny-options-group">
             <div class="checkbox">
               <label>
               <input type="checkbox" name="persons" value="Kuba K.">
-              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&ccb=2&_nc_sid=7206a8&_nc_ohc=ZUBgBA4cH8QAX9IyWEj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-waw1-1.xx&tp=27&oh=502ad4ebf86d02d6adcfa22dccd701d7&oe=601F529E" height = "80"/></span>
+              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.30497-1/c29.0.100.100a/p100x100/84241059_189132118950875_4138507100605120512_n.jpg?_nc_cat=1&ccb=2&_nc_sid=7206a8&_nc_ohc=ZUBgBA4cH8QAX9IyWEj&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-waw1-1.xx&tp=27&oh=502ad4ebf86d02d6adcfa22dccd701d7&oe=601F529E" height = "120"/></span>
               </label>
             </div>
             <div class="checkbox">
               <label>
               <input type="checkbox" name="persons" value="Kuba L.">
-              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.0-1/p100x100/122856167_1760056047475701_3097338334731053317_o.jpg?_nc_cat=108&ccb=2&_nc_sid=7206a8&_nc_ohc=BN2tqo9jmG0AX8FfTPI&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-waw1-1.xx&tp=6&oh=1d4df0ff84a0b36b581b57fcd600968f&oe=601EC427" height = "80"></span>
+              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.0-1/p100x100/122856167_1760056047475701_3097338334731053317_o.jpg?_nc_cat=108&ccb=2&_nc_sid=7206a8&_nc_ohc=BN2tqo9jmG0AX8FfTPI&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-waw1-1.xx&tp=6&oh=1d4df0ff84a0b36b581b57fcd600968f&oe=601EC427" height = "120"></span>
               </label>
             </div>
             <div class="checkbox">
               <label>
               <input type="checkbox" name="persons" value="Bartek S.">
-              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.0-9/1526556_254831838188045_5566807436520804551_n.jpg?_nc_cat=100&ccb=2&_nc_sid=09cbfe&_nc_ohc=Astqsg6awukAX-gAMxT&_nc_ht=scontent-waw1-1.xx&oh=3720f0f128f381bf9ebd36d3e4da07fe&oe=601F928E" height = "80"></span>
+              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.0-9/1526556_254831838188045_5566807436520804551_n.jpg?_nc_cat=100&ccb=2&_nc_sid=09cbfe&_nc_ohc=Astqsg6awukAX-gAMxT&_nc_ht=scontent-waw1-1.xx&oh=3720f0f128f381bf9ebd36d3e4da07fe&oe=601F928E" height = "120"></span>
               </label>
             </div>
           </div>
@@ -79,18 +71,46 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       "Data over time",
                       mainPanel(
                         dygraphOutput("dygraph", width = "150%"),
-                        checkboxInput("checkbox", "Aplly 14-days rolling average", FALSE),
+                        radioButtons("rollingAverage","Rolling average", choices = c("No rolling average", "Apply 15-days rolling average", "Apply 30-days rolling average", "Apply 60-days rolling average"), selected = "No rolling average"),
+                        
                         actionButton("do", "Generate boxplots"),
-                        plotOutput(outputId = "boxplots", width = "150%")
+                        uiOutput(outputId = "boxplotsUI", width = "150%")
                         
                         
                       )
                     ),
                     tabPanel("The most used emojis", br(),
-                             plotOutput("emojiPlot")),
+                             dateRangeInput(
+                               inputId = "dateRange",
+                               label = "Date range",
+                               start = Sys.Date() - 365,
+                               end = Sys.Date(),
+                               format = "dd-mm-yyyy",
+                               weekstart = 1
+                             ),
+                             actionButton("emojiButton", "Submit"),
+                             br(), br(),
+                             uiOutput("emojiPlot"),
+                             br(),
+                             verbatimTextOutput("textKubaK"),
+                             dataTableOutput("emojiKubaK"),
+                             br(),
+                             verbatimTextOutput("textKubaL"),
+                             dataTableOutput("emojiKubaL"),
+                             br(),
+                             verbatimTextOutput("textBartekS"),
+                             dataTableOutput("emojiBartekS")),
                     tabPanel(
                       "Activity time",
                       br(),
+                      dateRangeInput(
+                        inputId = "dateRangeActivity",
+                        label = "Date range",
+                        start = Sys.Date() - 365,
+                        end = Sys.Date(),
+                        format = "dd-mm-yyyy",
+                        weekstart = 1
+                      ),
                       selectInput(
                         inputId = "dayOfWeek",
                         label = "Day of the week",
@@ -112,22 +132,64 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 ))
 
 server <- function(input, output, session) {
-  output$emojiPlot <- renderPlot({
-    if (length(input$persons) == 0) {
-      return(NULL)
+  
+  ### Tab 2
+  
+  observeEvent(input$emojiButton, {
+    ppl <- isolate(input$persons)
+    output$emojiPlot <- renderUI({
+      if (length(ppl) > 0) {
+        plotOutput("emojiPlot2")
+      } else { verbatimTextOutput("emojiText2") }
+      })
+    output$emojiPlot2 <- renderPlot({
+      plot_emoji(isolate(input$dateRange[1]),
+                 isolate(input$dateRange[2]), ppl)
+    })
+    output$emojiText2 <- renderText("No one was selected")
+    if ("Kuba K." %in% ppl) {
+      output$textKubaK <- renderText("Kuba K.")
+      output$emojiKubaK <- renderDataTable(
+        prepare_data_table(isolate(input$dateRange[1]),
+                           isolate(input$dateRange[2]), "Kuba K."),
+        options = list(pageLength = 5),
+        escape = FALSE)
+    } else {
+      output$emojiKubaK <- NULL
+      output$textKubaK <- NULL
     }
-    plot_emoji(input$dateRange[1], input$dateRange[2],
-               input$persons)
-    
+    if ("Kuba L." %in% ppl) {
+      output$textKubaL <- renderText("Kuba L.")
+      output$emojiKubaL <- renderDataTable(
+        prepare_data_table(isolate(input$dateRange[1]),
+                           isolate(input$dateRange[2]), "Kuba L."),
+        options = list(pageLength = 5),
+        escape = FALSE)
+    } else {
+      output$emojiKubaL <- NULL
+      output$textKubaL <- NULL
+    }
+    if ("Bartek S." %in% ppl) {
+      output$textBartekS <- renderText("Bartek S.")
+      output$emojiBartekS <- renderDataTable(
+        prepare_data_table(isolate(input$dateRange[1]),
+                           isolate(input$dateRange[2]), "Bartek S."),
+        options = list(pageLength = 5),
+        escape = FALSE)
+    } else {
+      output$emojiBartekS <- NULL
+      output$textBartekS <- NULL
+    }
   })
+  
   
   ### Tab 3
   output$activityPlot <- renderPlot({
     if (length(input$persons) == 0) {
       return(NULL)
     }
-    plot_activity_time(input$dateRange[1],
-                       input$dateRange[2],
+    plot_activity_time(input$dateRangeActivity[1],
+                       input$dateRangeActivity[2],
                        input$persons,
                        input$dayOfWeek)
   })
@@ -136,28 +198,63 @@ server <- function(input, output, session) {
   ############ Tab 1 functionality
   
   output$dygraph <- renderDygraph({
-    if (input$checkbox) {
-      dygraph(total_xts_rolling) %>% dyRangeSelector() %>%
-        dyShading(from = min(index(total_xts)),
-                  to = max(index(total_xts)),
-                  color = "#fdf6e3") %>%
-        dyAxis(name = "x", axisLabelColor = "white") %>%
-        dyAxis(name = "y", axisLabelColor = "white") %>%
-        dySeries("Koziel", color = '#F2133C') %>%
-        dySeries("Lis", color = '#5741A6') %>%
-        dySeries("Sawicki", color = '#F2BD1D')
-    } else {
-      dygraph(total_xts) %>% dyRangeSelector() %>%
-        dyShading(from = min(index(total_xts)),
-                  to = max(index(total_xts)),
-                  color = "#fdf6e3") %>%
-        dyAxis(name = "x", axisLabelColor = "white") %>%
-        dyAxis(name = "y", axisLabelColor = "white") %>%
-        dySeries("Koziel", color = '#F2133C') %>%
-        dySeries("Lis", color = '#5741A6') %>%
-        dySeries("Sawicki", color = '#F2BD1D')
+    
+    
+    if (input$rollingAverage == "No rolling average") {
+      
+      fig <- dygraph(total_xts) 
+    
+    } else if (input$rollingAverage == "Apply 15-days rolling average"){
+      
+      
+      fig <- dygraph(total_xts_rolling_small) 
+    
+    } else if (input$rollingAverage == "Apply 30-days rolling average") {
+      
+      fig <- dygraph(total_xts_rolling_mid) 
+    
+    } else  {
+      
+      fig <- dygraph(total_xts_rolling_big) 
+    
     }
-
+    
+    
+    fig <- fig %>% dyRangeSelector() %>%
+      dyShading(from = min(index(total_xts)),
+                to = max(index(total_xts)),
+                color = "#fdf6e3") %>%
+      dyAxis(name = "x", axisLabelColor = "white") %>%
+      dyAxis(name = "y", axisLabelColor = "white") %>%
+      dySeries("Koziel", color = '#F2133C') %>%
+      dySeries("Lis", color = '#5741A6') %>%
+      dySeries("Sawicki", color = '#F2BD1D')
+    
+    
+    if(!"Kuba K." %in% input$persons){
+      fig <- fig %>% dySeries("Koziel", color = '#F2133C', strokeWidth = 0)
+    } else {
+      fig <- fig %>% dySeries("Koziel", color = '#F2133C')
+    }
+    
+    if(!"Kuba L." %in% input$persons){
+      fig <- fig %>% dySeries("Lis", color = '#5741A6', strokeWidth = 0)
+    } else {
+      fig <- fig %>% dySeries("Lis", color = '#5741A6')
+    }
+    
+    if(!"Bartek S." %in% input$persons){
+      fig <- fig %>% dySeries("Sawicki", color = '#F2BD1D', strokeWidth = 0)
+    } else {
+      fig <- fig %>% dySeries("Sawicki", color = '#F2BD1D')
+    }
+    
+    fig
+    
+    
+    
+    
+    
     
   })
   
@@ -196,7 +293,7 @@ server <- function(input, output, session) {
       return(NULL)
     ggplot(data_box()$Koziel, aes(x = day_of_the_week, y = length)) + geom_boxplot(fill = '#F2133C',
                                                                                    color = '#F2133C',
-                                                                                   alpha = 0.2) + scale_y_log10() +
+                                                                                   alpha = 0.2) + scale_y_log10(limits = c(NA, y_max)) +
       theme_minimal() +
       theme_solarized() + ylab("message length") + xlab("")
   })
@@ -205,7 +302,7 @@ server <- function(input, output, session) {
       return(NULL)
     ggplot(data_box()$Lis , aes(x = day_of_the_week, y = length)) + geom_boxplot(fill = '#5741A6',
                                                                                  color = '#5741A6',
-                                                                                 alpha = 0.2) + scale_y_log10() +
+                                                                                 alpha = 0.2) + scale_y_log10(limits = c(NA, y_max)) +
       theme_minimal() +
       theme_solarized() + ylab("message length") + xlab("")
   })
@@ -215,13 +312,26 @@ server <- function(input, output, session) {
     ggplot(data_box()$Sawicki, aes(x = day_of_the_week, y = length)) +
       geom_boxplot(fill = '#F2BD1D',
                    color = '#F2BD1D',
-                   alpha = 0.2) + scale_y_log10()  +
+                   alpha = 0.2) + scale_y_log10(limits = c(NA, y_max))  +
       theme_minimal() +
       theme_solarized() + ylab("message length") + xlab("")
   })
   
   
-  output$boxplots = renderPlot({
+  output$boxplotsUI <- renderUI({
+    if(length(input$persons)>0){
+      plotOutput("boxplots", width = "150%")
+    } else{
+      verbatimTextOutput("boxplotsNoSelection")
+    }
+  })
+  
+  
+  
+  output$boxplotsNoSelection <- renderText("No one was selected")
+  
+  
+  output$boxplots <- renderPlot({
     ptlist <- list(box_Koziel(), box_Lis(), box_Sawicki())
     
     
@@ -241,3 +351,6 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
+
+
