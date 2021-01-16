@@ -26,6 +26,7 @@ def main():
         True
     )
 
+    # we made this function, but we didn't use this data in our app
     create_reactions_csv(
         name + ' ' + surname,
         list_of_paths_to_directories,
