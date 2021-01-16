@@ -186,13 +186,14 @@ server <- function(input, output, session) {
   
   
   ### Tab 3
-  
+
   output$activityPlot <- renderUI({
     if (length(input$persons) > 0) {
       plotlyOutput("activityPlot2")
     } else { verbatimTextOutput("activityText") }
   })
   output$activityPlot2 <- renderPlotly({
+
     plot_activity_time(input$dateRangeActivity[1],
                        input$dateRangeActivity[2],
                        input$persons,
@@ -200,6 +201,7 @@ server <- function(input, output, session) {
   })
   output$activityText <- renderText("No one was selected")
   
+
   
   
   ############ Tab 1 functionality

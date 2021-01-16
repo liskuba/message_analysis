@@ -125,13 +125,18 @@ plot_emoji <- function(start, end, ppl) {
                fill = person)) +
     geom_col(position = position_dodge()) +
     theme_minimal() +
-    labs(x = NULL) +
+    labs(x = NULL, y = NULL) +
     scale_fill_manual(values=c("Kuba L." = '#5741A6',
                                "Kuba K." = '#F2133C',
                                "Bartek S." = '#F2BD1D')) +
-    scale_y_continuous(expand = c(0, 0))+
+    scale_y_continuous(expand = c(0, 0)) +
+    ggtitle("Number of emoji uses") +
     theme_solarized() +
-    theme(axis.text.x = element_markdown())
+    theme(axis.text.x = element_markdown(),
+          axis.text.y = element_text(size = 15),
+          plot.title = element_text(hjust = 0.5, size = 20),
+          legend.text = element_text(size = 15),
+          legend.title = element_text(size = 18))
 }
 
 prepare_data_table <- function(start, end, person) {
@@ -177,14 +182,20 @@ plot_activity_time <- function(start, end, ppl, weekday){
     filter(date>start)%>%
     filter(date<end)%>%
     ggplot()+
-    geom_bar(aes(x = floored_hour, group = person, fill = person),stat = "count", position = position_dodge(preserve = 'single'))+
-    xlab("message hour") + 
-    ylab("number of messages")+
+    geom_bar(aes(x = floored_hour, group = person, fill = person),stat = "count", position = position_dodge(preserve = 'single')) +
+    labs(x = "message hour", y = NULL) +
+    ggtitle("Number of messages") +
     scale_y_continuous(expand = c(0, 0))+
     scale_fill_manual(values=c("Kuba L." = '#5741A6',
                                "Kuba K." = '#F2133C',
                                "Bartek S." = '#F2BD1D'))+
-    theme_solarized() -> plot
+    theme_solarized() +
+    theme(axis.text.x = element_text(size = 15),
+          axis.text.y = element_text(size = 15),
+          axis.title.x = element_text(size = 18),
+          plot.title = element_text(hjust = 0.5, size = 20),
+          legend.text = element_text(size = 15),
+          legend.title = element_text(size = 18))-> plot
   
   ggplotly(plot, tooltip = c("person","count"))
 }
