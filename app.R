@@ -20,6 +20,7 @@ library(zoo)
 library(xts)
 library(dplyr)
 library(gridExtra)
+library(plotly)
 
 source("R_plots/data_messages_over_years.R")
 source("R_plots/prepare_data.R")
@@ -126,7 +127,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         )
                       ),
                       br(),
-                      plotOutput("activityPlot"),
+                      plotlyOutput("activityPlot"),
                     )
                   ),
                   width = 10)
@@ -185,7 +186,7 @@ server <- function(input, output, session) {
   
   
   ### Tab 3
-  output$activityPlot <- renderPlot({
+  output$activityPlot <- renderPlotly({
     if (length(input$persons) == 0) {
       return(NULL)
     }

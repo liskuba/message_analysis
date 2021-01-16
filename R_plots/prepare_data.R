@@ -184,5 +184,7 @@ plot_activity_time <- function(start, end, ppl, weekday){
     scale_fill_manual(values=c("Kuba L." = '#5741A6',
                                "Kuba K." = '#F2133C',
                                "Bartek S." = '#F2BD1D'))+
-    theme_solarized()
+    theme_solarized() -> plot
+  
+  ggplotly(plot)
 }
