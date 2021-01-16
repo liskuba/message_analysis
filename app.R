@@ -20,6 +20,7 @@ library(zoo)
 library(xts)
 library(dplyr)
 library(gridExtra)
+library(plotly)
 
 source("R_plots/data_messages_over_years.R")
 source("R_plots/prepare_data.R")
@@ -126,7 +127,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         )
                       ),
                       br(),
-                      plotOutput("activityPlot"),
+                      uiOutput("activityPlot"),
                     )
                   ),
                   width = 10)
@@ -185,15 +186,22 @@ server <- function(input, output, session) {
   
   
   ### Tab 3
-  output$activityPlot <- renderPlot({
-    if (length(input$persons) == 0) {
-      return(NULL)
-    }
+
+  output$activityPlot <- renderUI({
+    if (length(input$persons) > 0) {
+      plotlyOutput("activityPlot2")
+    } else { verbatimTextOutput("activityText") }
+  })
+  output$activityPlot2 <- renderPlotly({
+
     plot_activity_time(input$dateRangeActivity[1],
                        input$dateRangeActivity[2],
                        input$persons,
                        input$dayOfWeek)
   })
+  output$activityText <- renderText("No one was selected")
+  
+
   
   
   ############ Tab 1 functionality
