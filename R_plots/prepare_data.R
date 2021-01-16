@@ -197,5 +197,6 @@ plot_activity_time <- function(start, end, ppl, weekday){
           legend.text = element_text(size = 15),
           legend.title = element_text(size = 18))-> plot
   
-  ggplotly(plot, tooltip = c("person","count"))
+  ggplotly(plot, tooltip = c("count")) %>%
+    config(displayModeBar = FALSE)
 }
