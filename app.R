@@ -71,9 +71,10 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       "Data over time",
                       mainPanel(
                         dygraphOutput("dygraph", width = "150%"),
-                        checkboxInput("checkbox", "Apply 14-days rolling average", FALSE),
+                        radioButtons("rollingAverage","Rolling average", choices = c("No rolling average", "Apply 15-days rolling average", "Apply 30-days rolling average", "Apply 60-days rolling average"), selected = "No rolling average"),
+                        
                         actionButton("do", "Generate boxplots"),
-                        plotOutput(outputId = "boxplots", width = "150%")
+                        uiOutput(outputId = "boxplotsUI", width = "150%")
                         
                         
                       )
@@ -87,7 +88,6 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                format = "dd-mm-yyyy",
                                weekstart = 1
                              ),
-
                              actionButton("emojiButton", "Submit"),
                              br(), br(),
                              uiOutput("emojiPlot"),
@@ -198,27 +198,62 @@ server <- function(input, output, session) {
   ############ Tab 1 functionality
   
   output$dygraph <- renderDygraph({
-    if (input$checkbox) {
-      dygraph(total_xts_rolling) %>% dyRangeSelector() %>%
-        dyShading(from = min(index(total_xts)),
-                  to = max(index(total_xts)),
-                  color = "#fdf6e3") %>%
-        dyAxis(name = "x", axisLabelColor = "white") %>%
-        dyAxis(name = "y", axisLabelColor = "white") %>%
-        dySeries("Koziel", color = '#F2133C') %>%
-        dySeries("Lis", color = '#5741A6') %>%
-        dySeries("Sawicki", color = '#F2BD1D')
-    } else {
-      dygraph(total_xts) %>% dyRangeSelector() %>%
-        dyShading(from = min(index(total_xts)),
-                  to = max(index(total_xts)),
-                  color = "#fdf6e3") %>%
-        dyAxis(name = "x", axisLabelColor = "white") %>%
-        dyAxis(name = "y", axisLabelColor = "white") %>%
-        dySeries("Koziel", color = '#F2133C') %>%
-        dySeries("Lis", color = '#5741A6') %>%
-        dySeries("Sawicki", color = '#F2BD1D')
+    
+    
+    if (input$rollingAverage == "No rolling average") {
+      
+      fig <- dygraph(total_xts) 
+    
+    } else if (input$rollingAverage == "Apply 15-days rolling average"){
+      
+      
+      fig <- dygraph(total_xts_rolling_small) 
+    
+    } else if (input$rollingAverage == "Apply 30-days rolling average") {
+      
+      fig <- dygraph(total_xts_rolling_mid) 
+    
+    } else  {
+      
+      fig <- dygraph(total_xts_rolling_big) 
+    
     }
+    
+    
+    fig <- fig %>% dyRangeSelector() %>%
+      dyShading(from = min(index(total_xts)),
+                to = max(index(total_xts)),
+                color = "#fdf6e3") %>%
+      dyAxis(name = "x", axisLabelColor = "white") %>%
+      dyAxis(name = "y", axisLabelColor = "white") %>%
+      dySeries("Koziel", color = '#F2133C') %>%
+      dySeries("Lis", color = '#5741A6') %>%
+      dySeries("Sawicki", color = '#F2BD1D')
+    
+    
+    if(!"Kuba K." %in% input$persons){
+      fig <- fig %>% dySeries("Koziel", color = '#F2133C', strokeWidth = 0)
+    } else {
+      fig <- fig %>% dySeries("Koziel", color = '#F2133C')
+    }
+    
+    if(!"Kuba L." %in% input$persons){
+      fig <- fig %>% dySeries("Lis", color = '#5741A6', strokeWidth = 0)
+    } else {
+      fig <- fig %>% dySeries("Lis", color = '#5741A6')
+    }
+    
+    if(!"Bartek S." %in% input$persons){
+      fig <- fig %>% dySeries("Sawicki", color = '#F2BD1D', strokeWidth = 0)
+    } else {
+      fig <- fig %>% dySeries("Sawicki", color = '#F2BD1D')
+    }
+    
+    fig
+    
+    
+    
+    
     
     
   })
@@ -258,7 +293,7 @@ server <- function(input, output, session) {
       return(NULL)
     ggplot(data_box()$Koziel, aes(x = day_of_the_week, y = length)) + geom_boxplot(fill = '#F2133C',
                                                                                    color = '#F2133C',
-                                                                                   alpha = 0.2) + scale_y_log10() +
+                                                                                   alpha = 0.2) + scale_y_log10(limits = c(NA, y_max)) +
       theme_minimal() +
       theme_solarized() + ylab("message length") + xlab("")
   })
@@ -267,7 +302,7 @@ server <- function(input, output, session) {
       return(NULL)
     ggplot(data_box()$Lis , aes(x = day_of_the_week, y = length)) + geom_boxplot(fill = '#5741A6',
                                                                                  color = '#5741A6',
-                                                                                 alpha = 0.2) + scale_y_log10() +
+                                                                                 alpha = 0.2) + scale_y_log10(limits = c(NA, y_max)) +
       theme_minimal() +
       theme_solarized() + ylab("message length") + xlab("")
   })
@@ -277,13 +312,26 @@ server <- function(input, output, session) {
     ggplot(data_box()$Sawicki, aes(x = day_of_the_week, y = length)) +
       geom_boxplot(fill = '#F2BD1D',
                    color = '#F2BD1D',
-                   alpha = 0.2) + scale_y_log10()  +
+                   alpha = 0.2) + scale_y_log10(limits = c(NA, y_max))  +
       theme_minimal() +
       theme_solarized() + ylab("message length") + xlab("")
   })
   
   
-  output$boxplots = renderPlot({
+  output$boxplotsUI <- renderUI({
+    if(length(input$persons)>0){
+      plotOutput("boxplots", width = "150%")
+    } else{
+      verbatimTextOutput("boxplotsNoSelection")
+    }
+  })
+  
+  
+  
+  output$boxplotsNoSelection <- renderText("No one was selected")
+  
+  
+  output$boxplots <- renderPlot({
     ptlist <- list(box_Koziel(), box_Lis(), box_Sawicki())
     
     
@@ -303,6 +351,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-
-
-
