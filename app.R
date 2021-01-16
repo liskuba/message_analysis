@@ -1,4 +1,3 @@
-
 library(shiny)
 library(shinythemes)
 library(readr)
@@ -57,7 +56,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
             <div class="checkbox">
               <label>
               <input type="checkbox" name="persons" value="Bartek S.">
-              <span><img src="https://scontent-waw1-1.xx.fbcdn.net/v/t1.0-9/1526556_254831838188045_5566807436520804551_n.jpg?_nc_cat=100&ccb=2&_nc_sid=09cbfe&_nc_ohc=Astqsg6awukAX-gAMxT&_nc_ht=scontent-waw1-1.xx&oh=3720f0f128f381bf9ebd36d3e4da07fe&oe=601F928E" height = "120"></span>
+              <span><img src="https://scontent.fktw4-1.fna.fbcdn.net/v/t1.0-1/c83.50.576.576a/s100x100/1526556_254831838188045_5566807436520804551_n.jpg?_nc_cat=100&ccb=2&_nc_sid=7206a8&_nc_ohc=96FyKJ2bBDEAX9TUYug&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fktw4-1.fna&tp=28&oh=1babfa68d12441d29aafe93a7253c1c5&oe=60291148" height = "120"></span>
               </label>
             </div>
           </div>
@@ -65,7 +64,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
         '
                       )
                     )
-                  ),
+                  ,width = 2),
                   
                   mainPanel(tabsetPanel(
                     tabPanel(
@@ -129,7 +128,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                       br(),
                       plotOutput("activityPlot"),
                     )
-                  ))
+                  ),
+                  width = 10)
                 ))
 
 server <- function(input, output, session) {
@@ -352,5 +352,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-
-
