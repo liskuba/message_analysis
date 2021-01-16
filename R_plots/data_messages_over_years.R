@@ -1,3 +1,4 @@
+
 path <- "data_preparation/data"
 mess_Sawicki <-
   read_csv(paste(path, "/messages_Bartek_Sawicki.csv", sep = ''))
@@ -118,3 +119,4 @@ total_xts_rolling_big$Sawicki  <- rollmean(total_xts$Sawicki, 60, fill = NA)
 
 
 y_max <- max(max(mess_Koziel$length),max(mess_Lis$length),max(mess_Sawicki$length))
+
