@@ -186,5 +186,5 @@ plot_activity_time <- function(start, end, ppl, weekday){
                                "Bartek S." = '#F2BD1D'))+
     theme_solarized() -> plot
   
-  ggplotly(plot)
+  ggplotly(plot, tooltip = c("person","count"))
 }
