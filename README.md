@@ -29,6 +29,6 @@ Opcjonalnie (warto ze względu na łatwość w wykonaniu) można zmienić jeszcz
 
 W zaznaczonym miejscu wklejamy link do zdjęcia. Pamiętajmy, że miejsce wklejenia linku jest odpowiednio inne, jeśli przyjęliśmy imię inne niż Jakub Koziel.
 
-Należy też zauważyć, że w pliku all_emoji.csv (w folderze data_preparation/data) przechowujemy tylko takie emoji, które nasz zespół w sumie użył minimum 10 razy (dlatego zawiera wszystkie popularne). Gdyby nam zależało na zaktualizowaniu tego pliku należy wczęsniej uruchomić skrypt create_emoji_csv.R, ale jego wykonanie zajmuje trochę czasu.
+Należy też zauważyć, że w pliku all_emoji.csv (w folderze data_preparation/data) przechowujemy tylko takie emoji, które nasz zespół w sumie użył minimum 10 razy (dlatego zawiera wszystkie popularne i w większości przypadków na pewno wystarczające). Gdyby nam zależało na zaktualizowaniu tego pliku należy wczęsniej uruchomić skrypt create_emoji_csv.R, ale jego wykonanie zajmuje trochę czasu.
 
 Gotowe, możesz zacząć używać aplikacji na swoich danych. Miłej zabawy!
