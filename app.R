@@ -146,7 +146,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                           "Saturday",
                           "Sunday",
                           "all"
-                        )
+                        ),
+                        selected = "all"
                       ),
                       br(),
                       uiOutput("activityPlot"),
