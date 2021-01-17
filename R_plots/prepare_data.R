@@ -184,7 +184,7 @@ plot_activity_time <- function(start, end, ppl, weekday){
     ggplot()+
     geom_bar(aes(x = floored_hour, group = person, fill = person),stat = "count", position = position_dodge(preserve = 'single')) +
     labs(x = "message hour", y = NULL) +
-    ggtitle("Number of messages") +
+    ggtitle("Number of sent messages") +
     scale_y_continuous(expand = c(0, 0))+
     scale_fill_manual(values=c("Kuba L." = '#5741A6',
                                "Kuba K." = '#F2133C',
